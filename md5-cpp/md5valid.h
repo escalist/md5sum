@@ -111,6 +111,7 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 			for (q = 0; q < 16; q++) {
 				g = (m * q + o) % 16;
 				f = abcd[1] + rol(abcd[0] + fctn(abcd) + k[q + 16 * p] + mm.w[g], rotn[q % 4]);
+				//std::cout << std::hex << "THIS " << abcd[0] << ' ' << fctn(abcd) << ' ' << k[q + 16 * p] << ' ' << mm.w[g] << std::endl;
 
 				abcd[0] = abcd[3];
 				abcd[3] = abcd[2];

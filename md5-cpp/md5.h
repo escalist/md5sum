@@ -102,7 +102,7 @@ struct md5s md5(const char* input, int length)
 		unsigned int C = c0;
 		unsigned int D = d0;
 		// Main loop:
-		for (int i = 0; i < 63; ++i) {
+		for (int i = 0; i < 64; ++i) {
 			unsigned int F, g;
 			if (0 <= i && i <= 15) {
 				std::cout << "1 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
@@ -112,7 +112,7 @@ struct md5s md5(const char* input, int length)
 			}
 			else if (16 <= i && i <= 31) {
 				std::cout << "2 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
-				F = (D & B) | ((! D) & C);
+				F = (D & B) | ((~ D) & C);
 				g = (5 * i + 1) % 16;
 			}
 			else if (32 <= i && i <= 47) {
@@ -122,10 +122,11 @@ struct md5s md5(const char* input, int length)
 			}
 			else if (48 <= i && i <= 63) {
 				std::cout << "4 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
-				F = C ^ (B | (!D));
+				F = C ^ (B | (~D));
 				g = (7 * i) % 16;
 			}
 			// Be wary of the below definitions of a,b,c,d
+			//std::cout << std::hex << "THIS " << F << ' ' << A << ' ' << K[i] << ' ' << M[g] << std::endl;;
 			F = F + A + K[i] + M[g];  // M[g] must be a 32-bits block			
 			
 			A = D;
