@@ -1,19 +1,19 @@
 ﻿#include <iostream>
+
 #include "md5.h"
 #include "md5valid.h"
-#include <cstring>
 
 int main()
 {
-	const char* input = "The quick brown fox jumps over the lazy dog.";
-	const char* md5expected = "e4d909c290d0fb1ca068ffaddf22cbd0";
-	//const char* input = "";
+	//const char* input = "The quick brown fox jumps over the lazy dog.";
+	//const char* md5expected = "e4d909c290d0fb1ca068ffaddf22cbd0";
+	const char* input = "1";
 	//const char* md5expected = "d41d8cd98f00b204e9800998ecf8427e";
 	int len = strlen(input);
 
-	int j, k;
+	int j;
 	std::cout << "Invalid" << std::endl;
-	struct md5s result = md5(input, len);
+	chvlal::md5s result = chvlal::getMd5Value(input, len);
 	{
 		MD5union u;
 		for (j = 0; j < 4; j++) {
