@@ -105,41 +105,34 @@ struct md5s md5(const char* input, int length)
 		for (int i = 0; i < 64; ++i) {
 			unsigned int F, g;
 			if (0 <= i && i <= 15) {
-				std::cout << "1 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
 				F = (B & C) | (~B & D);
-				//auto result = (abcd[1] & abcd[2]) | (~abcd[1] & abcd[3]);
 				g = i;
 			}
 			else if (16 <= i && i <= 31) {
-				std::cout << "2 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
 				F = (D & B) | ((~ D) & C);
 				g = (5 * i + 1) % 16;
 			}
 			else if (32 <= i && i <= 47) {
-				std::cout << "3 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
 				F = B ^ C ^ D;
 				g = (3 * i + 5) % 16;
 			}
 			else if (48 <= i && i <= 63) {
-				std::cout << "4 " << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
 				F = C ^ (B | (~D));
 				g = (7 * i) % 16;
 			}
 			// Be wary of the below definitions of a,b,c,d
-			//std::cout << std::hex << "THIS " << F << ' ' << A << ' ' << K[i] << ' ' << M[g] << std::endl;;
 			F = F + A + K[i] + M[g];  // M[g] must be a 32-bits block			
 			
 			A = D;
 			D = C;
 			C = B;
-			B = B + leftrotate(F, s[i]);
-			
-			// Add this chunk's hash to result so far:
-			a0 = a0 + A;
-			b0 = b0 + B;
-			c0 = c0 + C;
-			d0 = d0 + D;
+			B = B + leftrotate(F, s[i]);			
 		}
+		// Add this chunk's hash to result so far:
+		a0 = a0 + A;
+		b0 = b0 + B;
+		c0 = c0 + C;
+		d0 = d0 + D;
 	}
 
 	struct md5s result;
@@ -147,5 +140,6 @@ struct md5s md5(const char* input, int length)
 	result.v[1] = b0;
 	result.v[2] = c0;
 	result.v[3] = d0;	
+
 	return result;
 }

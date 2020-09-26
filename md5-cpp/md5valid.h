@@ -13,23 +13,19 @@ typedef union uwb {
 typedef unsigned DigestArray[4];
 
 unsigned func0(unsigned abcd[]) {
-	std::cout << "1 " << std::hex << abcd[0] << ' ' << abcd[1] << ' ' << abcd[2] << ' ' << abcd[3] << std::endl;
 	auto result = (abcd[1] & abcd[2]) | (~abcd[1] & abcd[3]);
 	return result;
 }
 
 unsigned func1(unsigned abcd[]) {
-	std::cout << "2 " << std::hex << abcd[0] << ' ' << abcd[1] << ' ' << abcd[2] << ' ' << abcd[3] << std::endl;
 	return (abcd[3] & abcd[1]) | (~abcd[3] & abcd[2]);
 }
 
 unsigned func2(unsigned abcd[]) {
-	std::cout << "3 " << std::hex << abcd[0] << ' ' << abcd[1] << ' ' << abcd[2] << ' ' << abcd[3] << std::endl;
 	return  abcd[1] ^ abcd[2] ^ abcd[3];
 }
 
 unsigned func3(unsigned abcd[]) {
-	std::cout << "4 " << std::hex << abcd[0] << ' ' << abcd[1] << ' ' << abcd[2] << ' ' << abcd[3] << std::endl;
 	return abcd[2] ^ (abcd[1] | ~abcd[3]);
 }
 
@@ -111,7 +107,6 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 			for (q = 0; q < 16; q++) {
 				g = (m * q + o) % 16;
 				f = abcd[1] + rol(abcd[0] + fctn(abcd) + k[q + 16 * p] + mm.w[g], rotn[q % 4]);
-				//std::cout << std::hex << "THIS " << abcd[0] << ' ' << fctn(abcd) << ' ' << k[q + 16 * p] << ' ' << mm.w[g] << std::endl;
 
 				abcd[0] = abcd[3];
 				abcd[3] = abcd[2];
@@ -122,8 +117,8 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 		for (p = 0; p < 4; p++)
 			h[p] += abcd[p];
 		os += 64;		
-		return 0;
 	}
+
 	return h;
 }
 
@@ -132,9 +127,7 @@ void GetMD5String(const char* msg, int mlen) {
 	strcpy(str, "");
 	int j, k;
 	unsigned* d = Algorithms_Hash_MD5(msg, strlen(msg));
-	if (nullptr == d) {
-		return;
-	}
+
 	MD5union u;
 	for (j = 0; j < 4; j++) {
 		u.w = d[j];
