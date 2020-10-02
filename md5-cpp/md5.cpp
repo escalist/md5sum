@@ -23,48 +23,15 @@ namespace chvlal {
 
 	int calculateMaxLength(int length) {
 		const int chunksize = 64;
-		int d = ( length + 8) / chunksize;
-		int o = ( length + 8) % chunksize;
+		int d = (length + 8) / chunksize;
+		int o = (length + 8) % chunksize;
 		if (0 == o) {
 			return d * chunksize;
 		}
 		return (d + 1) * chunksize;
 	}
 
-	char getNextByte(const char* input, int length, int index) {
-		int realIndex = index;
-		if (realIndex < length) {
-			return input[realIndex];
-		}
 
-		if (realIndex == length) {
-			return 0x80;
-		}
-
-		int maxlength = calculateMaxLength(length);
-		
-		if (index < maxlength - 8) {
-			return 0;
-		}
-		if (index >= maxlength - 4) {			
-			return 0;
-		}
-		
-		long int bytenum = maxlength - index - 4;
-		
-		unsigned long value = 8 * length;
-
-		union {
-			unsigned w;
-			unsigned char b[4];
-		} lunion;
-
-		lunion.w = value;		
-
-		char result = lunion.b[4 - bytenum];
-
-		return result;
-	}
 
 
 	unsigned leftrotate(unsigned r, short N)
@@ -107,7 +74,7 @@ namespace chvlal {
 
 		// Pre-processing: adding a single 1 bit
 		int maxlen = calculateMaxLength(length);
-		int totalChunks = maxlen / 64; 
+		int totalChunks = maxlen / 64;
 
 
 		for (int ai = 0; ai < totalChunks; ++ai) {
@@ -115,8 +82,41 @@ namespace chvlal {
 			for (int j = 0; j < 16; ++j) {
 				char values[4];
 				for (int k = 0; k < 4; ++k) {
-					int offset = ai * 64 + 4 * j + k;					
-					values[k] = getNextByte(input, length, offset);
+					int index = ai * 64 + 4 * j + k;
+					//values[k] = getNextByte(input, length, offset);
+
+					int realIndex = index;
+					int maxlength = calculateMaxLength(length);
+					if (realIndex < length) {
+						values[k] = input[realIndex];
+					}
+
+					else if (realIndex == length) {
+						values[k] = 0x80;
+					}
+					else if (index < maxlength - 8) {
+						values[k] = 0;
+					}
+					else if (index >= maxlength - 4) {
+						values[k] = 0;
+					}
+					else {
+						long int bytenum = maxlength - index - 4;
+
+						unsigned long value = 8 * length;
+
+						union {
+							unsigned w;
+							unsigned char b[4];
+						} lunion;
+
+						lunion.w = value;
+
+						char result = lunion.b[4 - bytenum];
+
+						values[k] = result;
+					}
+
 				}
 				M[j] = concat(values[0], values[1], values[2], values[3]);
 			}
