@@ -106,16 +106,17 @@ namespace chvlal {
 		int d0 = 0x10325476;   // D
 
 		// Pre-processing: adding a single 1 bit
-		int totalChunks = (length + 1) / 512 + ((length + 1) % 512 != 0) ? 1 : 0;
+		int maxlen = calculateMaxLength(length);
+		int totalChunks = maxlen / 64; 
+
 
 		for (int ai = 0; ai < totalChunks; ++ai) {
 			unsigned int M[16];
 			for (int j = 0; j < 16; ++j) {
 				char values[4];
 				for (int k = 0; k < 4; ++k) {
-					int offset = ai * 512 + 4 * j + k;
+					int offset = ai * 64 + 4 * j + k;					
 					values[k] = getNextByte(input, length, offset);
-
 				}
 				M[j] = concat(values[0], values[1], values[2], values[3]);
 			}
