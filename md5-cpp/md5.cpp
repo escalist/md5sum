@@ -21,6 +21,16 @@ namespace chvlal {
 		return result;
 	}
 
+	int calculateMaxLength(int length) {
+		const int chunksize = 64;
+		int d = ( length + 8) / chunksize;
+		int o = ( length + 8) % chunksize;
+		if (0 == o) {
+			return d * chunksize;
+		}
+		return (d + 1) * chunksize;
+	}
+
 	char getNextByte(const char* input, int length, int index) {
 		int realIndex = index;
 		if (realIndex < length) {
@@ -31,22 +41,30 @@ namespace chvlal {
 			return 0x80;
 		}
 
-		int maxlength = (length % 512 + 1) * 512;
-
+		int maxlength = calculateMaxLength(length);
+		
 		if (index < maxlength - 8) {
 			return 0;
 		}
-		//last 8 bytes;
-		int bytenum = maxlength - index;
+		if (index >= maxlength - 4) {			
+			return 0;
+		}
+		
+		long int bytenum = maxlength - index - 4;
+		
+		unsigned long value = 8 * length;
 
-		unsigned int mask = 0xFF;
-		unsigned int shift = bytenum * 8;
-		return (8* length << shift) & mask;		
+		union {
+			unsigned w;
+			unsigned char b[4];
+		} lunion;
+
+		lunion.w = value;		
+
+		char result = lunion.b[4 - bytenum];
+
+		return result;
 	}
-
-	//char leftrotate(char x, char c) {
-		//return (x << c) | (x >> (32 - c));
-	//}
 
 
 	unsigned leftrotate(unsigned r, short N)
@@ -102,6 +120,10 @@ namespace chvlal {
 				M[j] = concat(values[0], values[1], values[2], values[3]);
 			}
 
+			for (int i = 0; i < 16; ++i) {
+				std::cout << std::hex << M[i] << std::endl;
+			}
+
 			// Initialize hash value for this chunk:
 			unsigned int A = a0;
 			unsigned int B = b0;
@@ -131,12 +153,12 @@ namespace chvlal {
 					g = (7 * i) % 16;
 				}
 				// Be wary of the below definitions of a,b,c,d				
-				std::cout << std::hex << "THIS - " << A << ' ' << F << ' ' << K[i] << ' ' << M[g] << ' ' << g << std::endl;
+				//std::cout << std::hex << "THIS - " << A << ' ' << F << ' ' << K[i] << ' ' << M[g] << ' ' << g << std::endl;
 				F = F + A + K[i] + M[g];  // M[g] must be a 32-bits block	
 				A = D;
 				D = C;
 				C = B;
-				std::cout << std::hex << "TEST - " << F << ' ' << s[i] << ' ' << leftrotate(F, s[i]) << std::endl;
+				//std::cout << std::hex << "TEST - " << F << ' ' << s[i] << ' ' << leftrotate(F, s[i]) << std::endl;
 				B = B + leftrotate(F, s[i]);
 				//std::cout << std::hex << A << ' ' << B << ' ' << C << ' ' << D << std::endl;
 			}

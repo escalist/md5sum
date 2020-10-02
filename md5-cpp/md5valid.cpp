@@ -81,7 +81,9 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 
 	if (k == NULL) k = calctable(kspace);
 
-	for (q = 0; q < 4; q++) h[q] = h0[q];
+	for (q = 0; q < 4; q++) {
+		h[q] = h0[q];
+	}
 
 	{
 		grps = 1 + (mlen + 8) / 64;
@@ -100,6 +102,9 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 
 	for (grp = 0; grp < grps; grp++) {
 		memcpy(mm.b, msg2 + os, 64);
+		for (int i = 0; i < 16; ++i) {			
+			std::cout << std::hex << mm.w[i] << std::endl;
+		}
 		for (q = 0; q < 4; q++) abcd[q] = h[q];
 		for (p = 0; p < 4; p++) {
 			fctn = ff[p];
@@ -108,10 +113,10 @@ unsigned* Algorithms_Hash_MD5(const char* msg, int mlen)
 			for (q = 0; q < 16; q++) {
 				g = (m * q + o) % 16;
 				auto fcntval = fctn(abcd);
-				std::cout << std::hex << "THIS - " << abcd[0] << ' ' << fcntval << ' ' << k[q + 16 * p] << ' ' << mm.w[g] << ' ' << g << std::endl;
+				//std::cout << std::hex << "THIS - " << abcd[0] << ' ' << fcntval << ' ' << k[q + 16 * p] << ' ' << mm.w[g] << ' ' << g << std::endl;
 				auto value = abcd[0] + fcntval + k[q + 16 * p] + mm.w[g];
 				f = abcd[1] + rol(value, rotn[q % 4]);
-				std::cout << std::hex << "TEST - " << value << ' ' << rotn[q % 4] << ' ' << rol(value, rotn[q % 4]) << std::endl;
+				//std::cout << std::hex << "TEST - " << value << ' ' << rotn[q % 4] << ' ' << rol(value, rotn[q % 4]) << std::endl;
 
 				abcd[0] = abcd[3];
 				abcd[3] = abcd[2];
